@@ -426,17 +426,17 @@ public class PlayerActivity extends Activity implements View.OnTouchListener,
         builder.setSingleChoiceItems(items, currentMode == null ? -1
                 : currentMode.ordinal(), new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int item) {
-                ShuffleMode m = null;
+                ShuffleMode m;
                 switch (item) {
-                    case 0:
-                        m = ShuffleMode.NONE;
-                        break;
                     case 1:
                         m = ShuffleMode.BY_SONG;
                         break;
                     case 2:
                         m = ShuffleMode.BY_ALBUM;
                         break;
+                    default:
+                    	m = ShuffleMode.NONE;
+                    	break;
                 }
                 mPlayer.setShuffleMode(m);
                 dialog.dismiss();

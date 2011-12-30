@@ -34,8 +34,9 @@ public class FavoriteBrowserActivity extends AbstractMusicBrowserActivity<Favori
         if (position < 0)
             return;
         Favorite item = (Favorite) getListAdapter().getItem(position);
-        if (item != null) ;
-        addToPlaylist(item);
+        if (item != null) {
+        	addToPlaylist(item);
+        }
     }
 
     @Override

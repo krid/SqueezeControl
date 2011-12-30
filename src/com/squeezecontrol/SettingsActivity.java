@@ -6,30 +6,28 @@
 
 package com.squeezecontrol;
 
+import java.io.IOException;
+
 import android.content.Intent;
-import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.Preference;
 import android.preference.Preference.OnPreferenceClickListener;
 import android.preference.PreferenceActivity;
 import android.widget.Toast;
+
 import com.squeezecontrol.io.SqueezeBroker;
 import com.squeezecontrol.io.SqueezeDiagnostics;
 import com.squeezecontrol.io.SqueezeEventListener;
-
-import java.io.IOException;
 
 public class SettingsActivity extends PreferenceActivity implements
         OnPreferenceClickListener, SqueezeEventListener {
 
     private final int PICK_PLAYER = 0;
-    private final int DIALOG_HELP = 0;
 
     private Preference mTestCli;
     private Preference mTestHttp;
     private Preference mConnect;
-    private ConnectivityManager mConnectivityManager;
     private Handler mHandler;
 
     @Override

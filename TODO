@@ -47,6 +47,11 @@ link to changelog, etc.
 
 CODE CHANGES
 
+*) Fix Android Lint warnings.
+
+*) Run FindBugs and fix problems it finds before every commit, or at least
+every release. 
+
 *) Add some sort of automated testing.  A little python socket server with a
 simple dict of request => response...
 

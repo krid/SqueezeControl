@@ -6,18 +6,19 @@
 
 package com.squeezecontrol;
 
+import java.io.IOException;
+
 import android.app.Activity;
 import android.app.Application;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Environment;
 import android.os.Handler;
 import android.widget.Toast;
+
 import com.squeezecontrol.download.MusicDownloadService;
 import com.squeezecontrol.image.HttpFetchingImageStore;
 import com.squeezecontrol.image.ImageLoaderService;
@@ -25,8 +26,6 @@ import com.squeezecontrol.io.SqueezeBroker;
 import com.squeezecontrol.io.SqueezeEventListener;
 import com.squeezecontrol.io.SqueezePlayer;
 import com.squeezecontrol.model.Song;
-
-import java.io.IOException;
 
 public class SqueezeService implements SqueezeEventListener {
 

@@ -331,7 +331,7 @@ public class SqueezeBroker {
                     }
                 }
             }
-            for (ResponseCallback callback : callbacks) {
+            for (@SuppressWarnings("rawtypes") ResponseCallback callback : callbacks) {
                 callback.handleResponse(response);
             }
             return callbacks.size() > 0;

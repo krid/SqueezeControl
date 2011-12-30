@@ -27,8 +27,6 @@ public class Settings {
 
     public static final String LAST_RUN_VERSION = "last_run_version";
 
-    private static int runs = 0;
-
     public static String getHost(Context context) {
         return PreferenceManager.getDefaultSharedPreferences(context)
                 .getString(HOST_KEY, null);
@@ -66,11 +64,6 @@ public class Settings {
     }
 
     public static boolean isConfigured(Context context) {
-
-        //  if (runs++ == 0) {
-        //  PreferenceManager.getDefaultSharedPreferences(context
-        //  ).edit().clear().commit(); }
-
         return PreferenceManager.getDefaultSharedPreferences(context)
                 .getBoolean(CONFIGURED_KEY, false);
     }

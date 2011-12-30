@@ -180,7 +180,8 @@ public class BrowseableAdapter<T extends Browsable> extends BaseAdapter implemen
     /**
      * {@inheritDoc}
      */
-    public T getItem(int position) {
+    @SuppressWarnings("unchecked")
+	public T getItem(int position) {
         if (position >= mObjects.length)
             return null;
         else

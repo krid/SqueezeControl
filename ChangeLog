@@ -1,3 +1,29 @@
+2011-12-30  Dirk Bergstrom  <krid@otisbean.com>
+
+Fix FindBugs errors and compiler warnings.
+
+	* src/com/squeezecontrol/FavoriteBrowserActivity.java (onListItemClick): 
+	Spurious semicolon after if statement rendered it meaningless.
+
+	* src/com/squeezecontrol/PlayerActivity.java (selectShuffleMode.onClick):
+	Fix switch so there's no possibility of passing null shuffle mode value. 
+
+	* src/com/squeezecontrol/io/SqueezeBroker.java (ReaderThread.executePrefixCallbacks):
+	Suppress warnings on raw callback type.
+
+	* src/com/squeezecontrol/AbstractMusicBrowserActivity.java (getListAdapter):
+	Parameterize to quell warnings.
+
+	* src/com/squeezecontrol/SettingsActivity.java: Remove unused
+	variables and clean up imports.
+
+	* src/com/squeezecontrol/SqueezeService.java: Clean up imports.
+
+	* src/com/squeezecontrol/Settings.java (runs): Remove unused variable.
+
+	* src/com/squeezecontrol/io/CommandParser.java (parse): Remove unused
+	variable.
+
 2011-12-04  Dirk Bergstrom  <dirk@otisbean.com>
 
 Browse album & artist from context menu.  Reorder main list activities.  Better

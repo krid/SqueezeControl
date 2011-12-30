@@ -354,8 +354,8 @@ public abstract class AbstractMusicBrowserActivity<T extends Browsable> extends
     }
 
     @Override
-    public BrowseableAdapter getListAdapter() {
-        return (BrowseableAdapter) super.getListAdapter();
+    public BrowseableAdapter<?> getListAdapter() {
+        return (BrowseableAdapter<?>) super.getListAdapter();
     }
 
     protected abstract BrowseLoadResult<T> loadItems(int startIndex, int count)
