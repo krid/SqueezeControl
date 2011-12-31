@@ -86,6 +86,9 @@ public abstract class AbstractMusicBrowserActivity<T extends Browsable> extends
 
     private NowPlayingView mNowPlayingView;
 
+	protected boolean hasHeaderOrFooter = false;
+	protected int headerOrFooterPosition = 0;
+	
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -217,7 +220,9 @@ public abstract class AbstractMusicBrowserActivity<T extends Browsable> extends
     	LayoutInflater mInflater = getLayoutInflater();
     	View hview = mInflater.inflate(R.layout.context_header, null);
     	TextView firstLine = (TextView) hview.findViewById(R.id.first_line);
-    	firstLine.setText(getSelectedItem().getName());
+
+    	Browsable item = getItemSelected();
+    	firstLine.setText(item.getName());
     	menu.setHeaderView(hview);
 		
     	/* XXX??? Maybe I should inflate a resource and then call
@@ -225,7 +230,7 @@ public abstract class AbstractMusicBrowserActivity<T extends Browsable> extends
     	menu.add(0, PLAY_CTX_MENU_ITEM, 0, "Play now");
 		menu.add(0, ADD_TO_PLAYLIST_CTX_MENU_ITEM, 1, "Add to playlist");
 		// Allow subclass to add menu items (artist, album, download)
-		addContextMenuItems(menu);
+		addContextMenuItems(menu, item);
     }
 
     /**
@@ -233,8 +238,9 @@ public abstract class AbstractMusicBrowserActivity<T extends Browsable> extends
      * as "Download to device" or "Browse albums by this artist"
      * 
      * @param menu The menu to add items to.
+     * @param item The item we're adding context for.
      */
-    protected void addContextMenuItems(ContextMenu menu) {
+    protected void addContextMenuItems(ContextMenu menu, Browsable item) {
     	// Nothing to see here in most subclasses.
     }
 
@@ -242,15 +248,24 @@ public abstract class AbstractMusicBrowserActivity<T extends Browsable> extends
     public boolean onContextItemSelected(MenuItem item) {
         int itemId = item.getItemId();
         if (itemId == ADD_TO_PLAYLIST_CTX_MENU_ITEM) {
-            addToPlaylist(getSelectedItem());
+        	if (hasHeaderOrFooter && mCurrentPosition == headerOrFooterPosition) {
+        		handleHeaderOrFooterContextClick(true);
+        	} else {
+        		addToPlaylist(getSelectedItem());
+        	}
         } else if (itemId == PLAY_CTX_MENU_ITEM) {
-            play(getSelectedItem(), mCurrentPosition);
+        	if (hasHeaderOrFooter && mCurrentPosition == headerOrFooterPosition) {
+        		handleHeaderOrFooterContextClick(false);
+        	} else {
+        		play(getSelectedItem(), mCurrentPosition);
+        	}
         } else if (itemId == DOWNLOAD_CTX_MENU_ITEM) {
         	downloadIfSdCardIsPresent(getSelectedItem());
         } else if (itemId == ARTIST_CTX_MENU_ITEM) {
-        	// Browse albums by the artist of the selected list item
+        	// Browse albums by the artist of the selected list item, which
+        	// should only be an Album or Song. 
         	Intent intent = new Intent(this, AlbumBrowserActivity.class);
-        	Object selectedItem = getSelectedItem();
+	    	Browsable selectedItem = getItemSelected();
         	String artistId;
         	if (selectedItem instanceof Song) {
         		artistId = ((Song) selectedItem).getArtistId();
@@ -266,14 +281,23 @@ public abstract class AbstractMusicBrowserActivity<T extends Browsable> extends
         	// Browse the album the selected list item (a Song) is from
 	        Intent intent = new Intent(this, SongBrowserActivity.class);
 	        Song selectedItem = (Song) getSelectedItem();
-	        intent.putExtra(SongBrowserActivity.EXTRA_ALBUM_ID,
-	        		selectedItem.getAlbumId());
+	        intent.putExtra(SongBrowserActivity.EXTRA_ALBUM_OBJECT,
+	        		Album.forSong(selectedItem));
         	startActivity(intent);
         }
         return true;
     }
 
-    private void downloadIfSdCardIsPresent(final T selectedItem) {
+    /**
+     * Handle context menu "Add to playlist" or "Play now" actions on a header or footer.
+     * 
+     * @param isAdd True if the action is "Add to playlist". 
+     */
+    protected void handleHeaderOrFooterContextClick(boolean isAdd) {
+    	// Implemented as needed in subclasses (Song and Album browsers).
+	}
+
+	private void downloadIfSdCardIsPresent(final T selectedItem) {
         String status = Environment.getExternalStorageState();
         if (status.equals(Environment.MEDIA_MOUNTED)) {
             AlertDialog.Builder b = new AlertDialog.Builder(this);
@@ -299,13 +323,42 @@ public abstract class AbstractMusicBrowserActivity<T extends Browsable> extends
     protected T getSelectedItem() {
         return (T) getListView().getItemAtPosition(mCurrentPosition);
     }
+    
+    /**
+     * @return The item selected, whether it's a regular item or a header/footer.
+     */
+    private Browsable getItemSelected() {
+    	if (hasHeaderOrFooter && mCurrentPosition == headerOrFooterPosition) {
+    		return getHeaderOrFooterItem();
+    	} else {
+    		return getSelectedItem();
+    	}
+    }
+
+    protected Browsable getHeaderOrFooterItem() {
+    	// Implemented in subclasses that support a header/footer.
+		return null;
+	}
 
     protected abstract void addToPlaylist(T selectedItem);
 
     protected abstract void play(T selectedItem, int index);
 
+    /**
+     * Handle "Download to device" context menu click.
+     * 
+     * @param selectedItem The item to download.
+     */
     protected void download(T selectedItem) {
-
+    	if (selectedItem instanceof Album) {
+    		getDownloadService().queueAlbumForDownload((Album) selectedItem);
+    	} else if (selectedItem instanceof Song) {
+    		getDownloadService().queueSongForDownload((Song) selectedItem);
+		} else {
+			// Unlikely to get here...
+			Toast.makeText(AbstractMusicBrowserActivity.this,
+                           "Can't download this type.", Toast.LENGTH_SHORT);
+		}
     }
 
     protected MusicBrowser getMusicBrowser() {

@@ -32,6 +32,7 @@ import com.squeezecontrol.io.SqueezeEventListener;
 import com.squeezecontrol.io.SqueezePlayer;
 import com.squeezecontrol.io.SqueezePlayer.ShuffleMode;
 import com.squeezecontrol.io.SqueezePlayerListener;
+import com.squeezecontrol.model.Album;
 import com.squeezecontrol.model.Song;
 import com.squeezecontrol.util.VolumeKeyHandler;
 import com.squeezecontrol.view.PlayerControlsView;
@@ -605,8 +606,8 @@ public class PlayerActivity extends Activity implements View.OnTouchListener,
         } else if (view.equals(mAlbumName.getParent()) && currentSong != null
                 && currentSong.albumId != null) {
             Intent intent = new Intent(this, SongBrowserActivity.class);
-            intent.putExtra(SongBrowserActivity.EXTRA_ALBUM_ID,
-                    mPlayer.getCurrentSong().albumId);
+	        intent.putExtra(SongBrowserActivity.EXTRA_ALBUM_OBJECT,
+	        		Album.forSong(mPlayer.getCurrentSong()));
             startActivity(intent);
         }
         return true;

@@ -6,8 +6,6 @@
 
 package com.squeezecontrol.model;
 
-import java.io.Serializable;
-
-public interface Browsable extends Serializable {
-    public String getName();
+public interface HasArtist {
+    public String getArtistName();
 }

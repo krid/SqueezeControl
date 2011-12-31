@@ -3,6 +3,10 @@
   ~ This program is free software; you can redistribute it and/or modify
   ~ it under the terms of the GNU General Public License version 3 as
   ~ published by the Free Software Foundation.
+  
+  
+  This is the bar that displays across the bottom of list views, showing
+  the currently playing song. 
   -->
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"

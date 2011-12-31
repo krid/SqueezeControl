@@ -6,8 +6,10 @@
 
 package com.squeezecontrol.model;
 
-public class Artist implements Browsable {
-    private String id;
+public class Artist implements Browsable, HasArtist {
+	private static final long serialVersionUID = -492104292628753891L;
+
+	private String id;
     private String name;
 
     public String getId() {
@@ -30,4 +32,9 @@ public class Artist implements Browsable {
     public String toString() {
         return name;
     }
+
+	@Override
+	public String getArtistName() {
+		return name;
+	}
 }

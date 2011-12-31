@@ -1,7 +1,6 @@
 TODO
 
-*) Song list for an album needs an item on top that allows user to play
-the entire album.
+FEATURES
 
 *) Need "all songs" item on Albums for artist list.
 
@@ -29,10 +28,6 @@ w/o search button, and ICS has no search button.
 
 *) Improve the "now playing" toolbar.  Play/pause toggle, progress bar, etc.
 
-*) Lists should remember their position when you use the back button.
-
-*) Fix bug where "now playing" doesn't track current song.
-
 *) Rework UI for ICS.  Fragments, ActionBar, etc.
 
 *) Display more info on list items in landscape layout or on tablets.
@@ -42,7 +37,20 @@ w/o search button, and ICS has no search button.
 *) About screen showing contact info, developers, license, link to github page,
 link to changelog, etc.
 
-*) Don't descend into album view from context menu for an album we're already in.
+
+BUGS
+
+*) When scrolling in album browser, sometimes the images aren't loaded when
+scrolling stops.  Seems to happen when you stop the scrolling suddenly, and
+it fixes itself if you scroll and let it coast to a stop.
+
+*) Lists don't remember their position when you use the back button.
+
+*) "Now playing" doesn't track current song.
+
+*) Long press on favorites items does nothing.
+
+*) Shouldn't descend into album view from context menu for an album we're already in.
 
 
 CODE CHANGES

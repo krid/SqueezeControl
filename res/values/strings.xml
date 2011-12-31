@@ -7,7 +7,8 @@
 
 <resources>
     <string name="app_name">SqueezeControl</string>
-    <string name="loading_progress">Loading...</string>
+    <string name="loading_progress">Loading&#8230;</string>
     <string name="browser_mode_activity">Browse SqueezeCenter music</string>
     <string name="wlan_required">SqueezeControl requires a WLAN connection to work. Enable WLAN now?</string>
+    <string name="all_songs">All songs&#8230;</string>
 </resources>

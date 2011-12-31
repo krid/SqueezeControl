@@ -16,6 +16,7 @@ import android.widget.*;
 import android.widget.AbsListView.OnScrollListener;
 import com.squeezecontrol.image.ImageLoaderService;
 import com.squeezecontrol.model.Album;
+import com.squeezecontrol.model.Browsable;
 import com.squeezecontrol.view.BrowseableAdapter;
 
 import java.io.IOException;
@@ -122,9 +123,9 @@ public class AlbumBrowserActivity extends AbstractMusicBrowserActivity<Album>
     }
 
     @Override
-    protected void addContextMenuItems(ContextMenu menu) {
-    	Album selectedItem = (Album) getSelectedItem();
-		menu.add(0, ARTIST_CTX_MENU_ITEM, 1, "Artist: " + selectedItem.artistName);
+    protected void addContextMenuItems(ContextMenu menu, Browsable item) {
+    	Album album = (Album) item;
+		menu.add(0, ARTIST_CTX_MENU_ITEM, 1, "Artist: " + album.artistName);
 		menu.add(0, DOWNLOAD_CTX_MENU_ITEM, 1, "Download to device");
     }
 
@@ -136,9 +137,8 @@ public class AlbumBrowserActivity extends AbstractMusicBrowserActivity<Album>
         if (selectedItem == null) return;
 
         Intent intent = new Intent(this, SongBrowserActivity.class);
-        intent.putExtra(SongBrowserActivity.EXTRA_ALBUM_ID, selectedItem.id);
-        intent.putExtra(SongBrowserActivity.EXTRA_ALBUM_NAME, selectedItem
-                .getName());
+        intent.putExtra(SongBrowserActivity.EXTRA_ALBUM_OBJECT, selectedItem);
+        
         if (mArtistId != null)
             intent.putExtra(SongBrowserActivity.EXTRA_ARTIST_ID, mArtistId);
         startActivity(intent);
@@ -146,17 +146,9 @@ public class AlbumBrowserActivity extends AbstractMusicBrowserActivity<Album>
 
     @Override
     protected void addToPlaylist(Album selectedItem) {
-        getPlayer().sendCommand(
-                "playlist addtracks album.id=" + selectedItem.id);
-        Toast.makeText(this, "Added to playlist:\n" + selectedItem.getName(),
-                Toast.LENGTH_SHORT).show();
-
-    }
-
-    @Override
-    protected void download(Album selectedItem) {
-        getDownloadService().queueAlbumForDownload(selectedItem);
-    }
+        getPlayer().addToPlaylist(selectedItem);
+        PlayerToasts.addedToPlayList(this, selectedItem);
+     }
 
     @Override
     protected void play(Album selectedItem, int index) {

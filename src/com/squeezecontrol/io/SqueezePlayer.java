@@ -397,6 +397,10 @@ public class SqueezePlayer {
         sendCommand("playlist addtracks playlist.id=" + Uri.encode(playlist.id));
     }
 
+	public void addToPlaylist(Album album) {
+		sendCommand("playlist addtracks album.id=" + album.id);
+	}
+
     public void playNow(Album album) {
         sendCommand("playlist loadtracks album.id=" + album.id);
     }

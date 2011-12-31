@@ -1,5 +1,62 @@
 2011-12-30  Dirk Bergstrom  <krid@otisbean.com>
 
+Add a header to the song list showing the album icon/title, allowing
+user to play/add to playlist/download the album as a whole.  Because
+the various BrowserActivity subclasses are typed, and the header item
+is of a different type, this required a lot of special case code.  I
+suspect a refactoring is in order, but it would be a doozy...
+
+	* src/com/squeezecontrol/SongBrowserActivity.java: Rewrite almost
+	half the class to handle the header.
+
+	* src/com/squeezecontrol/PlayerActivity.java (onLongClick): Pass
+	complete Album object when starting SongBrowserActivity.
+
+	* src/com/squeezecontrol/model/Browsable.java: Now extends Serializable.
+
+	* src/com/squeezecontrol/model/Song.java: Implement HasArtist, add
+	serialVersionUID.
+
+	* src/com/squeezecontrol/model/Album.java: Implement HasArtist, add
+	serialVersionUID.
+	(forSong): Create an Album from a Song.
+
+	* src/com/squeezecontrol/model/Artist.java: Implement HasArtist, add
+	serialVersionUID.
+
+	* src/com/squeezecontrol/model/HasArtist.java: Interface for Browsables
+	that have an artist.
+
+	* src/com/squeezecontrol/io/SqueezePlayer.java (addToPlaylist): Add
+	convenience method.
+
+	* src/com/squeezecontrol/AbstractMusicBrowserActivity.java (download):
+	Implement as a general method instead of overriding in subclasses.
+	(addContextMenuItems): Add Browsable item to arguments to avoid extra
+	call to getSelectedItem().
+	(onCreateContextMenu): Call getItemSelected().
+	(getItemSelected): A more general version of getSelectedItem() that
+	handles header/footer.
+	(onContextItemSelected): Handle header/footer items.  Pass Album
+	object to SongBrowserActivity.
+	(handleHeaderOrFooterContextClick, getHeaderOrFooterItem): More
+	spaghetti to handle header/footer.
+	
+	* src/com/squeezecontrol/AlbumBrowserActivity.java (download): Pull up.
+	(onListItemClick): Pass complete Album object when starting
+	SongBrowserActivity.
+	(addToPlaylist): Use convenience methods instead of reinventing the wheel.
+	(addContextMenuItems): Adapt to new signature.
+	
+	* src/com/squeezecontrol/view/BrowseableAdapter.java (init): Remove
+	unused alphabet code. 
+
+	* res/layout/nowplaying.xml: Add explanatory comment.
+
+	* res/values/strings.xml: Add new string, use proper ellipsis.
+
+2011-12-30  Dirk Bergstrom  <krid@otisbean.com>
+
 Fix FindBugs errors and compiler warnings.
 
 	* src/com/squeezecontrol/FavoriteBrowserActivity.java (onListItemClick): 

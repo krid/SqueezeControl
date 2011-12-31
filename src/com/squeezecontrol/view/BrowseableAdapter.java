@@ -4,12 +4,6 @@
  * published by the Free Software Foundation.
  */
 
-/*
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License version 3 as
- * published by the Free Software Foundation.
- */
-
 package com.squeezecontrol.view;
 
 import android.content.Context;
@@ -152,12 +146,6 @@ public class BrowseableAdapter<T extends Browsable> extends BaseAdapter implemen
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         mResource = mDropDownResource = resource;
         mFieldId = textViewResourceId;
-
-        String alphabetString = "\u0020ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-        char[] alphabet = new char[alphabetString.length()];
-        for (int i = 0; i < alphabet.length; i++) {
-            alphabet[i] = alphabetString.charAt(i);
-        }
     }
 
     /**

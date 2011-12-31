@@ -6,8 +6,9 @@
 
 package com.squeezecontrol.model;
 
-public class Album implements Browsable {
-    public String id;
+public class Album implements Browsable, HasArtist {
+	private static final long serialVersionUID = -4759544259646942401L;
+	public String id;
     public String name;
     public String artistName;
     public String artwork_track_id;
@@ -16,7 +17,14 @@ public class Album implements Browsable {
         return name;
     }
 
-
+    public static Album forSong(Song song) {
+    	Album a = new Album();
+        a.id = song.getAlbumId();
+        a.artistName = song.artist;
+        a.name = song.album;
+        return a;
+    }
+    
     public static Album forName(String name) {
         Album a = new Album();
         a.name = name;
@@ -28,4 +36,8 @@ public class Album implements Browsable {
         return name;
     }
 
+	@Override
+	public String getArtistName() {
+		return artistName;
+	}
 }

@@ -7,7 +7,9 @@
 package com.squeezecontrol.model;
 
 
-public class Song implements Browsable {
+public class Song implements Browsable, HasArtist {
+
+	private static final long serialVersionUID = -3438837626326356818L;
 
     public static final Song EMPTY = Song.forName("-");
 
@@ -70,6 +72,12 @@ public class Song implements Browsable {
 
 	public String getArtistId() {
 		return artistId;
+	}
+
+
+	@Override
+	public String getArtistName() {
+		return artist;
 	}
 
 	public String getAlbumId() {
