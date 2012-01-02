@@ -70,24 +70,19 @@ public class SongBrowserActivity extends AbstractMusicBrowserActivity<Song> {
      * Try to load the album cover image for the list header.
      */
     private void loadAlbumImage() {
-    	ImageView mCoverImage = (ImageView) mheader.findViewById(R.id.album_image);
+    	ImageView coverImageView = (ImageView) mheader.findViewById(R.id.album_image);
         if (null == mAlbum.artwork_track_id) {
         	// No cover image available
-            mCoverImage.setImageResource(R.drawable.unknown_album_cover);
+            coverImageView.setImageResource(R.drawable.unknown_album_cover);
         } else {
-        	/* In most cases the cover image will be in the cache, since
-        	 * the user was just viewing the album list.  If not, we'll
-        	 * have to load it... */
             Bitmap image = mCoverImageService.getFromCache(mAlbum);
             if (image != null) {
-                mCoverImage.setImageBitmap(image);
+                coverImageView.setImageBitmap(image);
             } else {
             	// Set temp image...
-                mCoverImage.setImageResource(R.drawable.unknown_album_cover);
+                coverImageView.setImageResource(R.drawable.unknown_album_cover);
                 // and load the real one
-                // FIXME This is a lot of code, and I'm not sure how often
-                // we'll need to do it.  Postpone the work...
-                //mCoverImageService.loadImage(mAlbum, mImageCallback);
+                mCoverImageService.loadImage(mAlbum, coverImageView);
             }
         }
     }

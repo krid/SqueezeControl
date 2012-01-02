@@ -1,5 +1,14 @@
 2012-01-02  Dirk Bergstrom  <krid@otisbean.com>
 
+	* src/com/squeezecontrol/SongBrowserActivity.java (loadAlbumImage):
+	Fetch image if it's not in the cache, clean up code.
+
+	* src/com/squeezecontrol/model/Album.java (forSong): Copy Song's
+	ID into Album's artwork_track_id (lucky they're the same), so that
+	image loading will work.
+
+2012-01-02  Dirk Bergstrom  <krid@otisbean.com>
+
 Fix bug where album thumbnails didn't load after some kinds of scrolling
 events.
 

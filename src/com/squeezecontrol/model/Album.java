@@ -17,11 +17,16 @@ public class Album implements Browsable, HasArtist {
         return name;
     }
 
+    /**
+     * Create an Album instance corresponding to the given Song.
+     */
     public static Album forSong(Song song) {
     	Album a = new Album();
         a.id = song.getAlbumId();
         a.artistName = song.artist;
         a.name = song.album;
+        // These IDs are, surprisingly and conveniently, the same...
+        a.artwork_track_id = song.id;
         return a;
     }
     
