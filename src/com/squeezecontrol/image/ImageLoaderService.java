@@ -53,6 +53,10 @@ public class ImageLoaderService implements Runnable {
         loadImage(nameFor(song), coverImageView);
     }
 
+    public final void loadImage(Album album, ImageView coverImageView) {
+    	loadImage(nameFor(album), coverImageView);
+    }
+    
     public final void loadImage(String name, ImageView coverImageView) {
         final WeakReference<ImageView> viewRef = new WeakReference<ImageView>(
                 coverImageView);

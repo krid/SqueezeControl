@@ -40,10 +40,6 @@ link to changelog, etc.
 
 BUGS
 
-*) When scrolling in album browser, sometimes the images aren't loaded when
-scrolling stops.  Seems to happen when you stop the scrolling suddenly, and
-it fixes itself if you scroll and let it coast to a stop.
-
 *) Lists don't remember their position when you use the back button.
 
 *) "Now playing" doesn't track current song.

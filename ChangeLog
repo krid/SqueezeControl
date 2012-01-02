@@ -1,3 +1,16 @@
+2012-01-02  Dirk Bergstrom  <krid@otisbean.com>
+
+Fix bug where album thumbnails didn't load after some kinds of scrolling
+events.
+
+	* src/com/squeezecontrol/AlbumBrowserActivity.java: Rewrite and
+	simplify interaction between scrolling and image loading.  Don't
+	load images during fling-scrolling, wait until the scroll stops.
+	Otherwise load images if there's Album data to load from.
+ 
+	* src/com/squeezecontrol/image/ImageLoaderService.java (loadImage):
+	Load image for an Album.
+
 2011-12-30  Dirk Bergstrom  <krid@otisbean.com>
 
 Add a header to the song list showing the album icon/title, allowing

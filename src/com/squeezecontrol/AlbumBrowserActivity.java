@@ -10,7 +10,9 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.text.util.Linkify;
+import android.util.Log;
 import android.view.ContextMenu;
+import android.view.ScaleGestureDetector.OnScaleGestureListener;
 import android.view.View;
 import android.widget.*;
 import android.widget.AbsListView.OnScrollListener;
@@ -32,9 +34,12 @@ public class AlbumBrowserActivity extends AbstractMusicBrowserActivity<Album>
 
     private String mArtistId;
     private String mSortMode = SORT_MODE_ALBUM;
-    private Callback<Bitmap> mImageCallback;
     private ImageLoaderService mCoverImageService;
-    private boolean mLoadArt = true;
+
+    /**
+     * When a scroll fling is ongoing we don't want to load images. 
+     */
+    private boolean mScrollFlingInProgress = false;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -51,21 +56,6 @@ public class AlbumBrowserActivity extends AbstractMusicBrowserActivity<Album>
 
         setContentView(R.layout.default_browser_list);
 
-        final Runnable notifyChanges = new Runnable() {
-            public void run() {
-                getListAdapter().notifyDataSetChanged();
-            }
-
-            ;
-        };
-        mImageCallback = new Callback<Bitmap>() {
-            public void handle(Bitmap value) {
-                getListView().post(notifyChanges);
-            }
-
-            ;
-        };
-
         getListView().setOnScrollListener(this);
 
         super.init();
@@ -77,6 +67,19 @@ public class AlbumBrowserActivity extends AbstractMusicBrowserActivity<Album>
         mCoverImageService = service.getCoverImageService();
     }
 
+    /* Scrolling behavior explained...
+     * 
+     * bindView is called for every list item during any kind of scrolling
+     * (and also when the view is first loaded). 
+     * 
+     * During slow scrolling (SCROLL_STATE_TOUCH_SCROLL) bindView is called
+     * and getItem() returns a non-null Album.
+     * 
+     * During fast scrolling (SCROLL_STATE_TOUCH_SCROLL using the 'thumb'
+     * or SCROLL_STATE_FLING) bindView is called but getItem() returns a null
+     * Album (presumably because LoaderThread is backed up), so we just use the
+     * placeholder data for everything.
+     */
     @Override
     protected BrowseableAdapter<Album> createListAdapter() {
         return new BrowseableAdapter<Album>(this, R.layout.album_list_item) {
@@ -97,17 +100,19 @@ public class AlbumBrowserActivity extends AbstractMusicBrowserActivity<Album>
                     coverImage.setImageResource(R.drawable.unknown_album_cover);
                 } else {
                     if (a.artwork_track_id == null) {
-                        coverImage
-                                .setImageResource(R.drawable.unknown_album_cover);
+                    	// No art for this album
+                        coverImage.setImageResource(R.drawable.unknown_album_cover);
                     } else {
                         Bitmap image = mCoverImageService.getFromCache(a);
                         if (image != null) {
+                        	// Cached image, use immediately
                             coverImage.setImageBitmap(image);
                         } else {
-                            coverImage
-                                    .setImageResource(R.drawable.unknown_album_cover);
-                            if (mLoadArt) {
-                                mCoverImageService.loadImage(a, mImageCallback);
+                        	/* Slap up a placeholder and, if we're not still
+                        	 * scrolling, start an async image fetch. */
+                            coverImage.setImageResource(R.drawable.unknown_album_cover);
+                            if (! mScrollFlingInProgress) {
+                                mCoverImageService.loadImage(a, coverImage);
                             }
 
                         }
@@ -167,17 +172,25 @@ public class AlbumBrowserActivity extends AbstractMusicBrowserActivity<Album>
                 startIndex, count, mSortMode);
     }
 
+    /*
+     * Note that when you stop a fling scroll by tapping on the screen the
+     * scroll state changes *twice* -- from FLING to TOUCH_SCROLL, and then
+     * from TOUCH_SCROLL to IDLE.
+     * 
+     * (non-Javadoc)
+     * @see com.squeezecontrol.AbstractMusicBrowserActivity#onScrollStateChanged(android.widget.AbsListView, int)
+     */
     @Override
     public void onScrollStateChanged(AbsListView view, int scrollState) {
         super.onScrollStateChanged(view, scrollState);
-        switch (scrollState) {
-            case OnScrollListener.SCROLL_STATE_IDLE:
-                mLoadArt = true;
-                getListView().invalidate();
-                break;
-            default:
-                mLoadArt = false;
-                break;
+        if (scrollState == OnScrollListener.SCROLL_STATE_FLING) {
+        	mScrollFlingInProgress = true;
+        } else if (mScrollFlingInProgress) {
+        	// Fling scroll has wound down or been stopped by a tap, load images.
+        	mScrollFlingInProgress = false;
+        	// Call notifyDataSetChanged for its side effect of refreshing the
+        	// list view.
+        	getListAdapter().notifyDataSetChanged();
         }
     }
 }
